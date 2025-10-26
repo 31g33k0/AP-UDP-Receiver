@@ -1,0 +1,23 @@
+@startuml
+
+component "start"
+component "open Access Point YOUR_SSID YOUR_PASSWORD"
+component "create UDP socket"
+component "bind UDP socket to port 12345"
+component "wait for UDP packet"
+component "got packet ?"
+component "display packet"
+
+
+"start" -down-> "open Access Point YOUR_SSID YOUR_PASSWORD"
+"open Access Point YOUR_SSID YOUR_PASSWORD" -down-> "create UDP socket"
+"create UDP socket" -down-> "bind UDP socket to port 12345"
+"bind UDP socket to port 12345" -down-> "wait for UDP packet"
+"wait for UDP packet" -> "got packet ?"
+"got packet ?" -> yes
+"got packet ?" -down-> no
+yes -> "display packet"
+no -> "wait for UDP packet"
+"display packet" -> "wait for UDP packet"
+
+@enduml
