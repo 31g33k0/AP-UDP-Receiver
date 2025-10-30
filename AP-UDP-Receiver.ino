@@ -13,6 +13,8 @@ const IPAddress GATEWAY(192, 168, 4, 1);
 const IPAddress SUBNET(255, 255, 255, 0);
 const unsigned long WIFI_RETRY_DELAY = 5000; // ms between connection retries
 const uint8_t MAX_CONNECTIONS = 4;        // Maximum number of connected clients
+const int pinX = 25;  // X-axis pin (GPIO25)
+const int pinY = 26;  // Y-axis pin (GPIO26)
 
 // Global objects
 WiFiUDP udp;
@@ -24,6 +26,8 @@ void setup() {
   while (!Serial && millis() < 2000) {
     delay(1); // Wait for serial port to connect with timeout
   }
+
+  setupPins();
   
   Serial.println("\n=== UDP Access Point Server ===");
   
@@ -61,6 +65,12 @@ void handleUdpTraffic() {
     len = udp.read(packetBuffer, len);
     if (len > 0) {
       packetBuffer[len] = '\0'; // Null-terminate the string
+      
+      // Set the pin values based on the received data
+      int xValue = atoi(packetBuffer);
+      int yValue = atoi(packetBuffer + strlen(packetBuffer));
+      digitalWrite(pinX, xValue);
+      digitalWrite(pinY, yValue);
       
       // Log the received message
       logPacket(udp.remoteIP(), udp.remotePort(), packetBuffer, len);
@@ -107,7 +117,10 @@ void printNetworkInfo() {
   Serial.println(WiFi.softAPmacAddress());
   Serial.println("===========================\n");
 }
-
+void setupPins() {
+  pinMode(pinX, OUTPUT);
+  pinMode(pinY, OUTPUT);
+}
 void logPacket(IPAddress remoteIp, uint16_t remotePort, const char* data, size_t len) {
   Serial.printf("\n[%lu] Received %u bytes from %s:%d\n", 
                millis(), len, 
@@ -122,9 +135,10 @@ void logPacket(IPAddress remoteIp, uint16_t remotePort, const char* data, size_t
       Serial.printf("\\x%02X", (uint8_t)data[i]);
     }
   }
-  Serial.println();
+//  Serial.println();
 }
-
+// Send a response to the client
+// WIP
 void sendUdpResponse(IPAddress ip, uint16_t port, const char* response) {
   udp.beginPacket(ip, port);
   udp.write((const uint8_t*)response, strlen(response));
