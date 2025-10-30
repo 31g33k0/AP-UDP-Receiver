@@ -1,6 +1,9 @@
 #include <WiFi.h>
 #include <WiFiUdp.h>
 #include <WiFiAP.h>
+#include <thread> // For thread handling, maybe useless
+#include <string> // For string handling, maybe useless
+#include <iostream> // For input/output operations, maybe useless
 #include <Arduino.h>
 
 // Configuration
@@ -67,8 +70,8 @@ void handleUdpTraffic() {
       packetBuffer[len] = '\0'; // Null-terminate the string
       
       // Set the pin values based on the received data
-      int xValue = atoi(packetBuffer);
-      int yValue = atoi(packetBuffer + strlen(packetBuffer));
+      int xValue = atoi(packetBuffer); // TODO could be replaced by std::stoi 
+      int yValue = atoi(packetBuffer + strlen(packetBuffer)); // TODO could be replaced by std::stoi
       digitalWrite(pinX, xValue);
       digitalWrite(pinY, yValue);
       
