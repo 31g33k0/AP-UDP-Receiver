@@ -145,13 +145,13 @@ void checkClientConnection() {
 }
 
 void setupPins() {
-  pinMode(pinX, OUTPUT);
-  pinMode(pinY, OUTPUT);
+  pinMode(pinX, OUTPUT); // TODO check if the OUTPUT modus is the right one
+  pinMode(pinY, OUTPUT); // TODO check if the OUTPUT modus is the right one
 }
 
 void resetPins() {
-  digitalWrite(pinX, LOW);
-  digitalWrite(pinY, LOW);
+  digitalWrite(pinX, LOW); // TODO check if the LOW value is the right one or if a 0 is needed
+  digitalWrite(pinY, LOW); // TODO check if the LOW value is the right one or if a 0 is needed
 }
 
 void logPacket(IPAddress remoteIp, uint16_t remotePort, const char* data, size_t len) {
