@@ -82,8 +82,8 @@ void handleUdpTraffic() {
       // Set the pin values based on the received data
       int xValue = atoi(packetBuffer); // TODO could be replaced by std::stoi 
       int yValue = atoi(packetBuffer + strlen(packetBuffer)); // TODO could be replaced by std::stoi
-      digitalWrite(pinX, xValue);
-      digitalWrite(pinY, yValue);
+      dacWrite(pinX, xValue);
+      dacWrite(pinY, yValue);
       
       // Log the received message
       logPacket(udp.remoteIP(), udp.remotePort(), packetBuffer, len);
@@ -145,13 +145,13 @@ void checkClientConnection() {
 }
 
 void setupPins() {
-  pinMode(pinX, OUTPUT); // TODO check if the OUTPUT modus is the right one
-  pinMode(pinY, OUTPUT); // TODO check if the OUTPUT modus is the right one
+  pinMode(pinX, OUTPUT);
+  pinMode(pinY, OUTPUT);
 }
 
 void resetPins() {
-  digitalWrite(pinX, LOW); // TODO check if the LOW value is the right one or if a 0 is needed
-  digitalWrite(pinY, LOW); // TODO check if the LOW value is the right one or if a 0 is needed
+  dacWrite(pinX, 0);
+  dacWrite(pinY, 0);
 }
 
 void logPacket(IPAddress remoteIp, uint16_t remotePort, const char* data, size_t len) {
