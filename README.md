@@ -17,6 +17,19 @@ A simple UDP server that runs on an ESP32/ESP8266, creating its own WiFi Access 
 
 - ESP32 or ESP8266 board
 - USB cable for programming and power
+- 2x digital output devices (e.g., LEDs, relays) for X and Y axis control
+
+## Pinout
+
+The following GPIO pins are used in this project:
+
+| Pin | Function      | Description                     |
+|-----|---------------|---------------------------------|
+| 25  | X-axis output | Controls the X-axis output      |
+| 26  | Y-axis output | Controls the Y-axis output      |
+| 3V3 | 3.3V Power    | Power for connected devices     |
+| GND | Ground        | Common ground for all components|
+
 
 ## Installation
 
@@ -48,6 +61,10 @@ const uint8_t MAX_CONNECTIONS = 4;       // Maximum number of connected clients
 ## Example
 
 To send a test message from a Linux/macOS terminal:
+
+```bash
+echo "314159" | nc -u 192.168.4.1 12345
+```
 
 ```bash
 echo "Hello, ESP32!" | nc -u 192.168.4.1 12345
