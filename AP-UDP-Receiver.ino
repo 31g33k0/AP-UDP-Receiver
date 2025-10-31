@@ -15,13 +15,16 @@ const IPAddress LOCAL_IP(192, 168, 4, 1);
 const IPAddress GATEWAY(192, 168, 4, 1);
 const IPAddress SUBNET(255, 255, 255, 0);
 const unsigned long WIFI_RETRY_DELAY = 5000; // ms between connection retries
-const uint8_t MAX_CONNECTIONS = 4;        // Maximum number of connected clients
+const uint8_t MAX_CONNECTIONS = 1;        // Maximum number of connected clients
 const int pinX = 25;  // X-axis pin (GPIO25)
 const int pinY = 26;  // Y-axis pin (GPIO26)
 
 // Global objects
 WiFiUDP udp;
 char packetBuffer[BUFFER_SIZE];            // Buffer to hold incoming packets
+
+// Global variables
+bool isClientConnected = false;
 
 void setup() {
   // Initialize Serial
@@ -58,6 +61,13 @@ void loop() {
 }
 
 void handleUdpTraffic() {
+  checkClientConnection();
+
+  if (!isClientConnected) {
+    resetPins();
+    return;
+  }
+  
   int packetSize = udp.parsePacket();
   
   if (packetSize > 0) {
@@ -78,8 +88,13 @@ void handleUdpTraffic() {
       // Log the received message
       logPacket(udp.remoteIP(), udp.remotePort(), packetBuffer, len);
       
-      // Optional: Send a reply to the client
-      // sendUdpResponse(udp.remoteIP(), udp.remotePort(), "ACK");
+    if (len <= 0) {
+      resetPins();
+      return;
+    }
+
+    // Optional: Send a reply to the client
+    // sendUdpResponse(udp.remoteIP(), udp.remotePort(), "ACK");
     }
   }
 }
@@ -120,10 +135,25 @@ void printNetworkInfo() {
   Serial.println(WiFi.softAPmacAddress());
   Serial.println("===========================\n");
 }
+
+void checkClientConnection() {
+  if (WiFi.softAPgetStationNum() == 0) {
+    isClientConnected = false;
+  } else {
+    isClientConnected = true;
+  }
+}
+
 void setupPins() {
   pinMode(pinX, OUTPUT);
   pinMode(pinY, OUTPUT);
 }
+
+void resetPins() {
+  digitalWrite(pinX, LOW);
+  digitalWrite(pinY, LOW);
+}
+
 void logPacket(IPAddress remoteIp, uint16_t remotePort, const char* data, size_t len) {
   Serial.printf("\n[%lu] Received %u bytes from %s:%d\n", 
                millis(), len, 
