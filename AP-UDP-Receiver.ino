@@ -18,6 +18,13 @@ const unsigned long WIFI_RETRY_DELAY = 5000; // ms between connection retries
 const uint8_t MAX_CONNECTIONS = 1;        // Maximum number of connected clients
 const int pinX = 25;  // X-axis pin (GPIO25)
 const int pinY = 26;  // Y-axis pin (GPIO26)
+const int negPinX = 33; // Negative X-axis pin (GPIO27)
+const int negPinY = 32; // Negative Y-axis pin (GPIO28)
+// DAC configuration
+const int dacResolution = 12; // DAC resolution (12 bits)
+const int dacMaxValue = 4095; // DAC maximum value (12 bits)
+const int dacMinValue = 0; // DAC minimum value (12 bits)
+const int dacMidValue = 2047; // DAC mid value (12 bits)
 
 // Global objects
 WiFiUDP udp;
@@ -80,11 +87,10 @@ void handleUdpTraffic() {
       packetBuffer[len] = '\0'; // Null-terminate the string
       
       // Set the pin values based on the received data
-      int xValue = atoi(packetBuffer); // TODO could be replaced by std::stoi 
-      int yValue = atoi(packetBuffer + strlen(packetBuffer)); // TODO could be replaced by std::stoi
-      dacWrite(pinX, xValue);
-      dacWrite(pinY, yValue);
-      
+      int xValue = atoi(packetBuffer) - dacMidValue; // TODO could be replaced by std::stoi 
+      int yValue = atoi(packetBuffer + strlen(packetBuffer)) - dacMidValue; // TODO could be replaced by std::stoi
+
+      setPinValues(xValue, yValue);
       // Log the received message
       logPacket(udp.remoteIP(), udp.remotePort(), packetBuffer, len);
       
@@ -147,11 +153,22 @@ void checkClientConnection() {
 void setupPins() {
   pinMode(pinX, OUTPUT);
   pinMode(pinY, OUTPUT);
+  pinMode(negPinX, OUTPUT);
+  pinMode(negPinY, OUTPUT);
 }
 
 void resetPins() {
   dacWrite(pinX, 0);
   dacWrite(pinY, 0);
+  digitalWrite(negPinX, LOW);
+  digitalWrite(negPinY, LOW);
+}
+
+void setPinValues(int xValue, int yValue) {
+  dacWrite(pinX, xValue);
+  dacWrite(pinY, yValue);
+  digitalWrite(negPinX, xValue < 0 ? HIGH : LOW); // Set the negative pin based on the sign of the value
+  digitalWrite(negPinY, yValue < 0 ? HIGH : LOW);
 }
 
 void logPacket(IPAddress remoteIp, uint16_t remotePort, const char* data, size_t len) {
