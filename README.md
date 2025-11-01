@@ -73,3 +73,8 @@ echo "Hello, ESP32!" | nc -u 192.168.4.1 12345
 ## License
 
 This project has no license.
+
+## Remarks
+
+I'll use an H bridge to control the X and Y axis.
+TODO add a timer to avoid short circuiting the H bridge.
