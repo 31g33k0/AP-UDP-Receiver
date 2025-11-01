@@ -16,10 +16,13 @@ const IPAddress GATEWAY(192, 168, 4, 1);
 const IPAddress SUBNET(255, 255, 255, 0);
 const unsigned long WIFI_RETRY_DELAY = 5000; // ms between connection retries
 const uint8_t MAX_CONNECTIONS = 1;        // Maximum number of connected clients
-const int pinX = 25;  // X-axis pin (GPIO25)
-const int pinY = 26;  // Y-axis pin (GPIO26)
-const int negPinX = 33; // Negative X-axis pin (GPIO27)
-const int negPinY = 32; // Negative Y-axis pin (GPIO28)
+const int ctrlPinX = 25;  // X-axis pin (GPIO25)
+const int ctrlPinY = 26;  // Y-axis pin (GPIO26)
+const int inPinX0 = 33; // Input X0-axis pin (GPIO27)
+const int inPinY0 = 32; // Input Y0-axis pin (GPIO28)
+const int inPinX1 = 35; // Input X1-axis pin (GPIO28)
+const int inPinY1 = 34; // Input Y1-axis pin (GPIO27)
+
 // DAC configuration
 const int dacResolution = 12; // DAC resolution (12 bits)
 const int dacMaxValue = 4095; // DAC maximum value (12 bits)
@@ -151,24 +154,30 @@ void checkClientConnection() {
 }
 
 void setupPins() {
-  pinMode(pinX, OUTPUT);
-  pinMode(pinY, OUTPUT);
-  pinMode(negPinX, OUTPUT);
-  pinMode(negPinY, OUTPUT);
+  pinMode(ctrlPinX, OUTPUT);
+  pinMode(ctrlPinY, OUTPUT);
+  pinMode(inPinX0, OUTPUT);
+  pinMode(inPinY0, OUTPUT);
+  pinMode(inPinX1, OUTPUT);
+  pinMode(inPinY1, OUTPUT);
 }
 
 void resetPins() {
-  dacWrite(pinX, 0);
-  dacWrite(pinY, 0);
-  digitalWrite(negPinX, LOW);
-  digitalWrite(negPinY, LOW);
+  dacWrite(ctrlPinX, 0);
+  dacWrite(ctrlPinY, 0);
+  digitalWrite(inPinX0, LOW);
+  digitalWrite(inPinY0, LOW);
+  digitalWrite(inPinX1, LOW);
+  digitalWrite(inPinY1, LOW);
 }
 
 void setPinValues(int xValue, int yValue) {
-  dacWrite(pinX, xValue);
-  dacWrite(pinY, yValue);
-  digitalWrite(negPinX, xValue < 0 ? HIGH : LOW); // Set the negative pin based on the sign of the value
-  digitalWrite(negPinY, yValue < 0 ? HIGH : LOW);
+  dacWrite(ctrlPinX, xValue); // TODO test it as a PWM signal using digitalWrite
+  dacWrite(ctrlPinY, yValue); // TODO test it as a PWM signal using digitalWrite
+  digitalWrite(inPinX0, xValue < 0 ? HIGH : LOW); 
+  digitalWrite(inPinY0, yValue < 0 ? HIGH : LOW);
+  digitalWrite(inPinX1, xValue > 0 ? HIGH : LOW); 
+  digitalWrite(inPinY1, yValue > 0 ? HIGH : LOW);
 }
 
 void logPacket(IPAddress remoteIp, uint16_t remotePort, const char* data, size_t len) {
