@@ -17,7 +17,12 @@ A simple UDP server that runs on an ESP32/ESP8266, creating its own WiFi Access 
 
 - ESP32 or ESP8266 board
 - USB cable for programming and power
-- 2x digital output devices (e.g., LEDs, relays) for X and Y axis control
+- H bridge or motor driver
+- two motors
+- power supply for the motors
+- breadboard and jumper wires or equivalent
+- optional: oscilloscope, logic analyser, voltmeter, ...
+
 
 ## Pinout
 
@@ -46,7 +51,7 @@ The following GPIO pins are used in this project for motor control:
 
 1. Clone this repository
 2. Open the project in Arduino IDE or PlatformIO
-3. Install required libraries (if any)
+3. Install required libraries (if needed)
 4. Upload the sketch to your board
 5. Open the Serial Monitor (115200 baud) to view logs
 
@@ -59,15 +64,16 @@ const char* SSID = "AP-UDP-Receiver";    // Access Point SSID
 const char* PASSWORD = "12345678";       // Password (min 8 chars)
 const uint16_t LOCAL_UDP_PORT = 12345;   // UDP port to listen on
 const size_t BUFFER_SIZE = 512;          // Size of receive buffer
-const uint8_t MAX_CONNECTIONS = 4;       // Maximum number of connected clients
+const uint8_t MAX_CONNECTIONS = 1;       // Maximum number of connected clients
 ```
 
 ## Usage
 
 1. After uploading the sketch, the device will create a WiFi network with the configured SSID
-2. Connect a device (computer, phone, etc.) to this network
+2. Connect a device (for example the UDP-Joystick https://github.com/31g33k0/UDP-Joystick) to this network
 3. Send UDP packets to the AP's IP (default: 192.168.4.1) on the configured port
 4. View received packets in the Serial Monitor
+5. The received packets will be used to control the motors
 
 ## Example
 
