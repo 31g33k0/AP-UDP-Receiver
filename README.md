@@ -21,14 +21,25 @@ A simple UDP server that runs on an ESP32/ESP8266, creating its own WiFi Access 
 
 ## Pinout
 
-The following GPIO pins are used in this project:
+The following GPIO pins are used in this project for motor control:
 
-| Pin | Function      | Description                     |
-|-----|---------------|---------------------------------|
-| 25  | X-axis output | Controls the X-axis output      |
-| 26  | Y-axis output | Controls the Y-axis output      |
-| 3V3 | 3.3V Power    | Power for connected devices     |
-| GND | Ground        | Common ground for all components|
+|Hbridge Pin| esp32 Pin | Function      | Direction|Description    
+|----|-----|---------------|-----------|------------------------------------|
+|TODO| 25  | ctrlPinX      | Output    | X-axis control signal (PWM or DAC) |
+|TODO| 26  | ctrlPinY      | Output    | Y-axis control signal (PWM or DAC) |
+|TODO| 32  | inPinY0       | Output    | Y-axis direction                   |
+|TODO| 33  | inPinX0       | Output    | X-axis direction                   |
+|TODO| 34  | inPinY1       | Output    | Y-axis direction                   |
+|TODO| 35  | inPinX1       | Output    | X-axis direction                   |
+|TODO| VCC | 5V Power      | -         | Power for ESP32 and Hbridge logic  |
+|TODO| GND | Ground        | -         | Common ground for all components   |
+
+
+### Notes:
+- Pins 25 and 26 can be used for PWM/DAC output for speed control
+- X-axis direction is controlled by inPinX0 and inPinX1
+- Y-axis direction is controlled by inPinY0 and inPinY1
+- Ensure proper H-bridge or motor driver is used to prevent short circuits
 
 
 ## Installation
@@ -77,4 +88,6 @@ This project has no license.
 ## Remarks
 
 I'll use an H bridge to control the X and Y axis.
-TODO add a timer to avoid short circuiting the H bridge.
+The candidates are self made H bridge or L298N or L293D. Suggestions are welcome.
+
+TODO add a timer to avoid short circuiting the H bridge if necessary
