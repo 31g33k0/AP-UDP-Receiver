@@ -54,6 +54,7 @@ The following GPIO pins are used in this project for motor control:
 3. Install required libraries (if needed)
 4. Upload the sketch to your board
 5. Open the Serial Monitor (115200 baud) to view logs
+6. Connect a device (for example the UDP-Joystick https://github.com/31g33k0/UDP-Joystick) to this network
 
 ## Configuration
 

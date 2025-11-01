@@ -18,16 +18,18 @@ const unsigned long WIFI_RETRY_DELAY = 5000; // ms between connection retries
 const uint8_t MAX_CONNECTIONS = 1;        // Maximum number of connected clients
 const int ctrlPinX = 25;  // X-axis pin (GPIO25)
 const int ctrlPinY = 26;  // Y-axis pin (GPIO26)
-const int inPinX0 = 33; // Input X0-axis pin (GPIO27)
-const int inPinY0 = 32; // Input Y0-axis pin (GPIO28)
-const int inPinX1 = 35; // Input X1-axis pin (GPIO28)
-const int inPinY1 = 34; // Input Y1-axis pin (GPIO27)
+const int inPinX0 = 33; // Input X0-axis pin (GPIO33)
+const int inPinY0 = 32; // Input Y0-axis pin (GPIO32)
+const int inPinX1 = 35; // Input X1-axis pin (GPIO35)
+const int inPinY1 = 34; // Input Y1-axis pin (GPIO34)
 
 // DAC configuration
+/*
 const int dacResolution = 12; // DAC resolution (12 bits)
 const int dacMaxValue = 4095; // DAC maximum value (12 bits)
 const int dacMinValue = 0; // DAC minimum value (12 bits)
 const int dacMidValue = 2047; // DAC mid value (12 bits)
+*/
 
 // Global objects
 WiFiUDP udp;
