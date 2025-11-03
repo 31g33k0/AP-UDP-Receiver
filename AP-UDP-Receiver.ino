@@ -22,6 +22,7 @@ const int inPinX0 = 33; // Input X0-axis pin (GPIO33)
 const int inPinY0 = 32; // Input Y0-axis pin (GPIO32)
 const int inPinX1 = 35; // Input X1-axis pin (GPIO35)
 const int inPinY1 = 34; // Input Y1-axis pin (GPIO34)
+const int MidValue = 2047;
 
 // DAC configuration
 /*
@@ -92,9 +93,15 @@ void handleUdpTraffic() {
       packetBuffer[len] = '\0'; // Null-terminate the string
       
       // Set the pin values based on the received data
-      int xValue = atoi(packetBuffer) - dacMidValue; // TODO could be replaced by std::stoi 
-      int yValue = atoi(packetBuffer + strlen(packetBuffer)) - dacMidValue; // TODO could be replaced by std::stoi
-
+      int xValue = atoi(packetBuffer) - MidValue; // TODO could be replaced by std::stoi 
+      char* spacePos = strchr(packetBuffer, ' ');  // Find the space between X and Y values
+      int yValue = spacePos ? atoi(spacePos + 1) - MidValue : 0;
+      // for debugging
+      Serial.print("X : ");
+      Serial.println(xValue);
+      Serial.print("Y : ");
+      Serial.println(yValue);
+      // end debugging
       setPinValues(xValue, yValue);
       // Log the received message
       logPacket(udp.remoteIP(), udp.remotePort(), packetBuffer, len);
@@ -165,8 +172,8 @@ void setupPins() {
 }
 
 void resetPins() {
-  dacWrite(ctrlPinX, 0);
-  dacWrite(ctrlPinY, 0);
+  dacWrite(ctrlPinX, 0); // or ledcWrite(ctrlPinX, 0) or digitalWrite(ctrlPinX, LOW);
+  dacWrite(ctrlPinY, 0); // or ledcWrite(ctrlPinY, 0) or digitalWrite(ctrlPinY, LOW);
   digitalWrite(inPinX0, LOW);
   digitalWrite(inPinY0, LOW);
   digitalWrite(inPinX1, LOW);
@@ -195,6 +202,7 @@ void logPacket(IPAddress remoteIp, uint16_t remotePort, const char* data, size_t
     } else {
       Serial.printf("\\x%02X", (uint8_t)data[i]);
     }
+
   }
 //  Serial.println();
 }
