@@ -22,8 +22,8 @@ const int inPinX0 = 33; // Input X0-axis pin (GPIO33)
 const int inPinY0 = 32; // Input Y0-axis pin (GPIO32)
 const int inPinX1 = 35; // Input X1-axis pin (GPIO35)
 const int inPinY1 = 34; // Input Y1-axis pin (GPIO34)
-const int testPinX = 27; // Input X2-axis pin (GPIO27)
-const int testPinY = 28; // Input Y2-axis pin (GPIO28)
+const int testPinX = 27; // Input X2-axis pin (GPIO27) <--
+const int testPinY = 14; // Input Y2-axis pin (GPIO14) <--
 const int MidValue = 2047;
 
 // DAC configuration
@@ -197,8 +197,8 @@ void setPinValues(int xValue, int yValue) {
   // debug block
   digitalWrite(inPinX1, HIGH); // TODO find out why it stays low
   digitalWrite(inPinY1, HIGH); // TODO find out why it stays low
-  digitalWrite(testPinX, HIGH); // debug pin X
-  digitalWrite(testPinY, HIGH); // debug pin Y
+  digitalWrite(testPinX, xValue > 0 ? HIGH : LOW); // debug pin X
+  digitalWrite(testPinY, yValue > 0 ? HIGH : LOW); // debug pin Y
   Serial.println("setPinValues");
   Serial.print("X0 : ");
   Serial.print(xValue);
