@@ -181,8 +181,8 @@ void resetPins() {
 }
 
 void setPinValues(int xValue, int yValue) {
-  ledcWrite(ctrlPinX, xValue); // TODO test it as a dac signal using dacWrite
-  ledcWrite(ctrlPinY, yValue); // TODO test it as a dac signal using dacWrite
+  ledcWrite(ctrlPinX, abs(xValue)); // TODO test it as a dac signal using dacWrite
+  ledcWrite(ctrlPinY, abs(yValue)); // TODO test it as a dac signal using dacWrite
   digitalWrite(inPinX0, xValue < 0 ? HIGH : LOW); 
   digitalWrite(inPinY0, yValue < 0 ? HIGH : LOW);
   digitalWrite(inPinX1, xValue > 0 ? HIGH : LOW); 
