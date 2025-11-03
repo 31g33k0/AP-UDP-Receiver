@@ -22,6 +22,8 @@ const int inPinX0 = 33; // Input X0-axis pin (GPIO33)
 const int inPinY0 = 32; // Input Y0-axis pin (GPIO32)
 const int inPinX1 = 35; // Input X1-axis pin (GPIO35)
 const int inPinY1 = 34; // Input Y1-axis pin (GPIO34)
+const int testPinX = 27; // Input X2-axis pin (GPIO27)
+const int testPinY = 28; // Input Y2-axis pin (GPIO28)
 const int MidValue = 2047;
 
 // DAC configuration
@@ -97,6 +99,7 @@ void handleUdpTraffic() {
       char* spacePos = strchr(packetBuffer, ' ');  // Find the space between X and Y values
       int yValue = spacePos ? atoi(spacePos + 1) - MidValue : 0;
       // for debugging
+      Serial.println("\n=== Packet Data ===");
       Serial.print("X : ");
       Serial.println(xValue);
       Serial.print("Y : ");
@@ -169,6 +172,8 @@ void setupPins() {
   pinMode(inPinY0, OUTPUT);
   pinMode(inPinX1, OUTPUT);
   pinMode(inPinY1, OUTPUT);
+  pinMode(testPinX, OUTPUT);
+  pinMode(testPinY, OUTPUT);
 }
 
 void resetPins() {
@@ -178,6 +183,8 @@ void resetPins() {
   digitalWrite(inPinY0, LOW);
   digitalWrite(inPinX1, LOW);
   digitalWrite(inPinY1, LOW);
+  digitalWrite(testPinX, LOW);
+  digitalWrite(testPinY, LOW);
 }
 
 void setPinValues(int xValue, int yValue) {
@@ -185,8 +192,40 @@ void setPinValues(int xValue, int yValue) {
   ledcWrite(ctrlPinY, abs(yValue)); // TODO test it as a dac signal using dacWrite
   digitalWrite(inPinX0, xValue < 0 ? HIGH : LOW); 
   digitalWrite(inPinY0, yValue < 0 ? HIGH : LOW);
-  digitalWrite(inPinX1, xValue > 0 ? HIGH : LOW); 
-  digitalWrite(inPinY1, yValue > 0 ? HIGH : LOW);
+  //digitalWrite(inPinX1, xValue > 0 ? HIGH : LOW);
+  //digitalWrite(inPinY1, yValue > 0 ? HIGH : LOW);
+  // debug block
+  digitalWrite(inPinX1, HIGH); // TODO find out why it stays low
+  digitalWrite(inPinY1, HIGH); // TODO find out why it stays low
+  digitalWrite(testPinX, HIGH); // debug pin X
+  digitalWrite(testPinY, HIGH); // debug pin Y
+  Serial.println("setPinValues");
+  Serial.print("X0 : ");
+  Serial.print(xValue);
+  Serial.print(" ");
+  Serial.println(digitalRead(inPinX0));
+  Serial.print("X1 : ");
+  Serial.print(xValue);
+  Serial.print(" ");
+  Serial.println(digitalRead(inPinX1));
+  Serial.print("Y0 : ");
+  Serial.print(yValue);
+  Serial.print(" ");
+  Serial.println(digitalRead(inPinY0));
+  Serial.print("Y1 : ");
+  Serial.print(yValue);
+  Serial.print(" ");
+  Serial.println(digitalRead(inPinY1));
+  Serial.println();
+  Serial.print("test X : ");
+  Serial.print(xValue);
+  Serial.print(" ");
+  Serial.println(digitalRead(testPinX));
+  Serial.print("test Y : ");
+  Serial.print(yValue);
+  Serial.print(" ");
+  Serial.println(digitalRead(testPinY));
+  // end debug block
 }
 
 void logPacket(IPAddress remoteIp, uint16_t remotePort, const char* data, size_t len) {
