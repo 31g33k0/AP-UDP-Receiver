@@ -5,6 +5,11 @@
 #include <string> // For string handling, maybe useless
 #include <iostream> // For input/output operations, maybe useless
 #include <Arduino.h>
+#if defined(ESP32)
+  #include <driver/ledc.h> // For ESP32 PWM
+#endif
+#include <esp32-hal-ledc.h> // For ESP32 PWM. Maybe useless
+
 
 // Configuration
 const char* SSID = "AP-UDP-Receiver";    // Access Point SSID
@@ -20,11 +25,19 @@ const int ctrlPinX = 25;  // X-axis pin (GPIO25)
 const int ctrlPinY = 26;  // Y-axis pin (GPIO26)
 const int inPinX0 = 33; // Input X0-axis pin (GPIO33)
 const int inPinY0 = 32; // Input Y0-axis pin (GPIO32)
-const int inPinX1 = 35; // Input X1-axis pin (GPIO35)
-const int inPinY1 = 34; // Input Y1-axis pin (GPIO34)
-const int testPinX = 27; // Input X2-axis pin (GPIO27) <--
-const int testPinY = 14; // Input Y2-axis pin (GPIO14) <--
+const int inPinX1 = 27; // Input X1-axis pin (GPIO27)
+const int inPinY1 = 14; // Input Y1-axis pin (GPIO14)
+const int testPinX = 12; // Input X2-axis pin (GPIO12)
+const int testPinY = 13; // Input Y2-axis pin (GPIO13)
 const int MidValue = 2047;
+
+// PWM configuration
+const int pwmChannelX = 1;      // Canal PWM différent du précédent
+const int pwmChannelY = 2;      // Canal PWM différent du précédent
+const int pwmFreq = 1000;      // Fréquence PWM (1 kHz = bon compromis)
+const int pwmResolution = 8;   // 8 bits de résolution (0–255)
+
+// pin 34 and 35 cannot go HIGH
 
 // DAC configuration
 /*
@@ -166,8 +179,12 @@ void checkClientConnection() {
 }
 
 void setupPins() {
-  pinMode(ctrlPinX, OUTPUT);
-  pinMode(ctrlPinY, OUTPUT);
+  //pinMode(ctrlPinX, OUTPUT);
+  //pinMode(ctrlPinY, OUTPUT);
+  // ledcSetup(pwmChannelX, pwmFreq, pwmResolution);
+  // ledcSetup(pwmChannelY, pwmFreq, pwmResolution);
+  // ledcAttachPin(ctrlPinX, pwmChannelX, pwmFreq, pwmResolution);
+  // ledcAttachPin(ctrlPinY, pwmChannelY, pwmFreq, pwmResolution);
   pinMode(inPinX0, OUTPUT);
   pinMode(inPinY0, OUTPUT);
   pinMode(inPinX1, OUTPUT);
@@ -177,8 +194,8 @@ void setupPins() {
 }
 
 void resetPins() {
-  dacWrite(ctrlPinX, 0); // or ledcWrite(ctrlPinX, 0) or digitalWrite(ctrlPinX, LOW);
-  dacWrite(ctrlPinY, 0); // or ledcWrite(ctrlPinY, 0) or digitalWrite(ctrlPinY, LOW);
+  dacWrite(ctrlPinX, 0); // dacWrite or ledcWrite(ctrlPinX, 0) or digitalWrite(ctrlPinX, LOW);
+  dacWrite(ctrlPinY, 0); // dacWrite or ledcWrite(ctrlPinY, 0) or digitalWrite(ctrlPinY, LOW);
   digitalWrite(inPinX0, LOW);
   digitalWrite(inPinY0, LOW);
   digitalWrite(inPinX1, LOW);
@@ -188,17 +205,15 @@ void resetPins() {
 }
 
 void setPinValues(int xValue, int yValue) {
-  ledcWrite(ctrlPinX, abs(xValue)); // TODO test it as a dac signal using dacWrite
-  ledcWrite(ctrlPinY, abs(yValue)); // TODO test it as a dac signal using dacWrite
+  ledcWrite(pwmChannelX, abs(xValue)); // TODO test it as a dac signal using dacWrite
+  ledcWrite(pwmChannelY, abs(yValue)); // TODO test it as a dac signal using dacWrite
   digitalWrite(inPinX0, xValue < 0 ? HIGH : LOW); 
   digitalWrite(inPinY0, yValue < 0 ? HIGH : LOW);
-  //digitalWrite(inPinX1, xValue > 0 ? HIGH : LOW);
-  //digitalWrite(inPinY1, yValue > 0 ? HIGH : LOW);
+  digitalWrite(inPinX1, xValue > 0 ? HIGH : LOW);
+  digitalWrite(inPinY1, yValue > 0 ? HIGH : LOW);
   // debug block
-  digitalWrite(inPinX1, HIGH); // TODO find out why it stays low
-  digitalWrite(inPinY1, HIGH); // TODO find out why it stays low
-  digitalWrite(testPinX, xValue > 0 ? HIGH : LOW); // debug pin X
-  digitalWrite(testPinY, yValue > 0 ? HIGH : LOW); // debug pin Y
+  ledcWrite(testPinX, abs(xValue)); // debug pin X
+  ledcWrite(testPinY, abs(yValue)); // debug pin Y
   Serial.println("setPinValues");
   Serial.print("X0 : ");
   Serial.print(xValue);
