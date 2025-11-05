@@ -185,7 +185,7 @@ void checkClientConnection() {
 
 void setupPins() {
   servoY.attach(testPinY);
-  servoY.write(angleY); // may be useless
+  // servoY.write(angleY); // may be useless
   //pinMode(ctrlPinX, OUTPUT);
   //pinMode(ctrlPinY, OUTPUT);
   // ledcSetup(pwmChannelX, pwmFreq, pwmResolution);
