@@ -6,10 +6,10 @@
 #include <iostream> // For input/output operations, maybe useless
 #include <Arduino.h>
 #if defined(ESP32)
-  #include <driver/ledc.h> // For ESP32 PWM
+  #include <driver/ledc.h> // For ESP32 PWM. Maybe useless
 #endif
 #include <esp32-hal-ledc.h> // For ESP32 PWM. Maybe useless
-
+#include <ESP32Servo.h>
 
 // Configuration
 const char* SSID = "AP-UDP-Receiver";    // Access Point SSID
@@ -31,11 +31,16 @@ const int testPinX = 12; // Input X2-axis pin (GPIO12)
 const int testPinY = 13; // Input Y2-axis pin (GPIO13)
 const int MidValue = 2047;
 
+Servo servoY;
+int angleY = 0;
+
 // PWM configuration
-const int pwmChannelX = 1;      // Canal PWM différent du précédent
-const int pwmChannelY = 2;      // Canal PWM différent du précédent
+/*
+const int pwmChannelX = 1;
+const int pwmChannelY = 2;     // Canal PWM différent du précédent
 const int pwmFreq = 1000;      // Fréquence PWM (1 kHz = bon compromis)
 const int pwmResolution = 8;   // 8 bits de résolution (0–255)
+*/
 
 // pin 34 and 35 cannot go HIGH
 
@@ -179,6 +184,8 @@ void checkClientConnection() {
 }
 
 void setupPins() {
+  servoY.attach(testPinY);
+  servoY.write(angleY); // may be useless
   //pinMode(ctrlPinX, OUTPUT);
   //pinMode(ctrlPinY, OUTPUT);
   // ledcSetup(pwmChannelX, pwmFreq, pwmResolution);
@@ -194,8 +201,10 @@ void setupPins() {
 }
 
 void resetPins() {
-  dacWrite(ctrlPinX, 0); // dacWrite or ledcWrite(ctrlPinX, 0) or digitalWrite(ctrlPinX, LOW);
-  dacWrite(ctrlPinY, 0); // dacWrite or ledcWrite(ctrlPinY, 0) or digitalWrite(ctrlPinY, LOW);
+  
+  servoY.write(0);
+  dacWrite(ctrlPinX, 0); // dacWrite or ledcWrite(ctrlPinX, 0) or digitalWrite(ctrlPinX, LOW) or ledcWrite(pwmChannelX, 0);
+  dacWrite(ctrlPinY, 0); // dacWrite or ledcWrite(ctrlPinY, 0) or digitalWrite(ctrlPinY, LOW) or ledcWrite(pwmChannelY, 0);
   digitalWrite(inPinX0, LOW);
   digitalWrite(inPinY0, LOW);
   digitalWrite(inPinX1, LOW);
@@ -205,15 +214,21 @@ void resetPins() {
 }
 
 void setPinValues(int xValue, int yValue) {
-  ledcWrite(pwmChannelX, abs(xValue)); // TODO test it as a dac signal using dacWrite
-  ledcWrite(pwmChannelY, abs(yValue)); // TODO test it as a dac signal using dacWrite
+  int xMap = map(xValue, -2047, 2048, -255, 255);
+  int yMap = map(yValue, -2047, 2048, -255, 255);
+
+  int angleY = map(yValue, -2047, 2048, 0, 180);
+  servoY.write(angleY);
+
+  analogWrite(ctrlPinX, abs(xMap)); // TODO test it as a dac signal using dacWrite
+  analogWrite(ctrlPinY, abs(yMap)); // TODO test it as a dac signal using dacWrite
   digitalWrite(inPinX0, xValue < 0 ? HIGH : LOW); 
   digitalWrite(inPinY0, yValue < 0 ? HIGH : LOW);
   digitalWrite(inPinX1, xValue > 0 ? HIGH : LOW);
   digitalWrite(inPinY1, yValue > 0 ? HIGH : LOW);
   // debug block
-  ledcWrite(testPinX, abs(xValue)); // debug pin X
-  ledcWrite(testPinY, abs(yValue)); // debug pin Y
+  //ledcWrite(testPinX, abs(xValue)); // debug pin X
+  //ledcWrite(testPinY, abs(yValue)); // debug pin Y
   Serial.println("setPinValues");
   Serial.print("X0 : ");
   Serial.print(xValue);
@@ -240,6 +255,10 @@ void setPinValues(int xValue, int yValue) {
   Serial.print(yValue);
   Serial.print(" ");
   Serial.println(digitalRead(testPinY));
+  Serial.print("servo Y : ");
+  Serial.println(angleY);
+  Serial.println();
+
   // end debug block
 }
 
