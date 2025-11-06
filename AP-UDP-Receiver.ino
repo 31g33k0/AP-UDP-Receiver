@@ -28,7 +28,7 @@ const int inPinY0 = 32; // Input Y0-axis pin (GPIO32)
 const int inPinX1 = 27; // Input X1-axis pin (GPIO27)
 const int inPinY1 = 14; // Input Y1-axis pin (GPIO14)
 const int testPinX = 12; // Input X2-axis pin (GPIO12)
-const int testPinY = 13; // Input Y2-axis pin (GPIO13)
+const int servoPinY = 13; // Input Y2-axis pin (GPIO13)
 const int MidValue = 2047;
 
 Servo servoY;
@@ -184,7 +184,7 @@ void checkClientConnection() {
 }
 
 void setupPins() {
-  servoY.attach(testPinY);
+  servoY.attach(servoPinY);
   // servoY.write(angleY); // may be useless
   //pinMode(ctrlPinX, OUTPUT);
   //pinMode(ctrlPinY, OUTPUT);
@@ -197,7 +197,7 @@ void setupPins() {
   pinMode(inPinX1, OUTPUT);
   pinMode(inPinY1, OUTPUT);
   pinMode(testPinX, OUTPUT);
-//  pinMode(testPinY, OUTPUT);
+//  pinMode(servoPinY, OUTPUT);
 }
 
 void resetPins() {
@@ -210,7 +210,7 @@ void resetPins() {
   digitalWrite(inPinX1, LOW);
   digitalWrite(inPinY1, LOW);
   //digitalWrite(testPinX, LOW);
-  //digitalWrite(testPinY, LOW);
+  //digitalWrite(servoPinY, LOW);
 }
 
 void setPinValues(int xValue, int yValue) {
@@ -228,7 +228,8 @@ void setPinValues(int xValue, int yValue) {
   digitalWrite(inPinY1, yValue > 0 ? HIGH : LOW);
   // debug block
   //ledcWrite(testPinX, abs(xValue)); // debug pin X
-  //ledcWrite(testPinY, abs(yValue)); // debug pin Y
+  //ledcWrite(servoPinY, abs(yValue)); // debug pin Y
+  /*
   Serial.println("setPinValues");
   Serial.print("X0 : ");
   Serial.print(xValue);
@@ -254,12 +255,11 @@ void setPinValues(int xValue, int yValue) {
   Serial.print("test Y : ");
   Serial.print(yValue);
   Serial.print(" ");
-  Serial.println(digitalRead(testPinY));
+  Serial.println(digitalRead(servoPinY));
   Serial.print("servo Y : ");
   Serial.println(angleY);
-  Serial.println(digitalRead(testPinY));
   Serial.println();
-
+  */
   // end debug block
 }
 
