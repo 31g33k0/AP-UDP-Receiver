@@ -197,7 +197,7 @@ void setupPins() {
   pinMode(inPinX1, OUTPUT);
   pinMode(inPinY1, OUTPUT);
   pinMode(testPinX, OUTPUT);
-  pinMode(testPinY, OUTPUT);
+//  pinMode(testPinY, OUTPUT);
 }
 
 void resetPins() {
@@ -209,8 +209,8 @@ void resetPins() {
   digitalWrite(inPinY0, LOW);
   digitalWrite(inPinX1, LOW);
   digitalWrite(inPinY1, LOW);
-  digitalWrite(testPinX, LOW);
-  digitalWrite(testPinY, LOW);
+  //digitalWrite(testPinX, LOW);
+  //digitalWrite(testPinY, LOW);
 }
 
 void setPinValues(int xValue, int yValue) {
@@ -257,6 +257,7 @@ void setPinValues(int xValue, int yValue) {
   Serial.println(digitalRead(testPinY));
   Serial.print("servo Y : ");
   Serial.println(angleY);
+  Serial.println(digitalRead(testPinY));
   Serial.println();
 
   // end debug block
