@@ -29,6 +29,7 @@ const int inPinX1 = 27; // Input X1-axis pin (GPIO27)
 const int inPinY1 = 14; // Input Y1-axis pin (GPIO14)
 const int testPinX = 12; // Input X2-axis pin (GPIO12)
 const int servoPinY = 13; // Input Y2-axis pin (GPIO13)
+const int ledPin = 2; // LED pin (GPIO2)
 const int MidValue = 2047;
 
 Servo servoY;
@@ -178,8 +179,10 @@ void printNetworkInfo() {
 void checkClientConnection() {
   if (WiFi.softAPgetStationNum() == 0) {
     isClientConnected = false;
+    digitalWrite(ledPin, LOW);
   } else {
     isClientConnected = true;
+    digitalWrite(ledPin, HIGH);
   }
 }
 
@@ -197,6 +200,7 @@ void setupPins() {
   pinMode(inPinX1, OUTPUT);
   pinMode(inPinY1, OUTPUT);
   pinMode(testPinX, OUTPUT);
+  pinMode(ledPin, OUTPUT);
 //  pinMode(servoPinY, OUTPUT);
 }
 
@@ -209,6 +213,7 @@ void resetPins() {
   digitalWrite(inPinY0, LOW);
   digitalWrite(inPinX1, LOW);
   digitalWrite(inPinY1, LOW);
+  //digitalWrite(ledPin, LOW);
   //digitalWrite(testPinX, LOW);
   //digitalWrite(servoPinY, LOW);
 }
