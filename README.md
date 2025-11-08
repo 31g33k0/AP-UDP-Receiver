@@ -12,6 +12,7 @@ A simple UDP server that runs on an ESP32/ESP8266, creating its own WiFi Access 
 - Handles non-printable characters in received data
 - Automatic restart on critical failures
 - Configurable network settings
+- LED indicator for client connection status
 
 ## Hardware Requirements
 
@@ -38,12 +39,15 @@ The following GPIO pins are used in this project for motor control:
 |TODO| 35  | inPinX1       | Output    | X-axis direction                   |
 |TODO| VCC | 5V Power      | -         | Power for ESP32 and Hbridge logic  |
 |TODO| GND | Ground        | -         | Common ground for all components   |
-
+|    | 2   | ledPin        | Output    | LED                                |
+|    | 12  | testPinX      | Output    | Test pin                           |
+|    | 13  | servoPinY     | Output    | Servo pin on Y axis                |
 
 ### Notes:
-- Pins 25 and 26 can be used for PWM/DAC output for speed control
+- Pins 25 and 26 can be used for PWM/DAC output for speed control (optionnal)
 - X-axis direction is controlled by inPinX0 and inPinX1
 - Y-axis direction is controlled by inPinY0 and inPinY1
+- Y-axis servo is controlled by servoPinY
 - Ensure proper H-bridge or motor driver is used to prevent short circuits
 
 
