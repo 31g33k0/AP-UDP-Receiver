@@ -162,9 +162,11 @@ void checkClientConnection() {
   if (WiFi.softAPgetStationNum() == 0) {
     isClientConnected = false;
     digitalWrite(ledPin, LOW);
+    Serial.println("no client connected"); // TODO test monday
   } else {
     isClientConnected = true;
     digitalWrite(ledPin, HIGH);
+    Serial.println("client connected"); // TODO test monday
   }
 }
 
