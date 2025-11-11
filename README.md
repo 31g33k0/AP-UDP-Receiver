@@ -21,7 +21,9 @@ A simple UDP server that runs on an ESP32/ESP8266, creating its own WiFi Access 
 - H bridge or motor driver
 - two motors
 - power supply for the motors
+- servo
 - breadboard and jumper wires or equivalent
+- optional: power supply for the esp32 if you choose two power supplies.
 - optional: oscilloscope, logic analyser, voltmeter, ...
 
 
@@ -31,17 +33,18 @@ The following GPIO pins are used in this project for motor control:
 
 |Hbridge Pin| esp32 Pin | Function      | Direction|Description    
 |----|-----|---------------|-----------|------------------------------------|
-|TODO| 25  | ctrlPinX      | Output    | X-axis control signal (PWM or DAC) |
-|TODO| 26  | ctrlPinY      | Output    | Y-axis control signal (PWM or DAC) |
-|TODO| 32  | inPinY0       | Output    | Y-axis direction                   |
-|TODO| 33  | inPinX0       | Output    | X-axis direction                   |
-|TODO| 34  | inPinY1       | Output    | Y-axis direction                   |
-|TODO| 35  | inPinX1       | Output    | X-axis direction                   |
-|TODO| VCC | 5V Power      | -         | Power for ESP32 and Hbridge logic  |
-|TODO| GND | Ground        | -         | Common ground for all components   |
+|ENA | 25  | ctrlPinX      | Output    | X-axis control signal (PWM or DAC) |
+|ENB | 26  | ctrlPinY      | Output    | Y-axis control signal (PWM or DAC) |
+|IN3 | 32  | inPinY0       | Output    | Y-axis direction                   |
+|IN1 | 33  | inPinX0       | Output    | X-axis direction                   |
+|IN4 | 34  | inPinY1       | Output    | Y-axis direction                   |
+|IN2 | 35  | inPinX1       | Output    | X-axis direction                   |
+|VSS | VCC | 5V Power      | -         | Power for ESP32 and Hbridge logic  |
+|GND | GND | Ground        | -         | Common ground for all components   |
 |    | 2   | ledPin        | Output    | LED                                |
 |    | 12  | testPinX      | Output    | Test pin                           |
 |    | 13  | servoPinY     | Output    | Servo pin on Y axis                |
+|VS  | -   | 9V Power      | -         | Power for motors                   |
 
 ### Notes:
 - Pins 25 and 26 can be used for PWM/DAC output for speed control (optionnal)
