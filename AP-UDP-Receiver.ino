@@ -182,7 +182,7 @@ void setupPins() {
 
 void resetPins() {
   
-  servoY.write(0);
+  servoY.write(89);
   dacWrite(ctrlPinX, 0); // dacWrite or ledcWrite(ctrlPinX, 0) or digitalWrite(ctrlPinX, LOW) or ledcWrite(pwmChannelX, 0);
   dacWrite(ctrlPinY, 0);
   digitalWrite(inPinX0, LOW);

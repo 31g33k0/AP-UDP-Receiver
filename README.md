@@ -26,7 +26,6 @@ A simple UDP server that runs on an ESP32/ESP8266, creating its own WiFi Access 
 - optional: power supply for the esp32 if you choose two power supplies.
 - optional: oscilloscope, logic analyser, voltmeter, ...
 
-
 ## Pinout
 
 The following GPIO pins are used in this project for motor control:
@@ -37,8 +36,8 @@ The following GPIO pins are used in this project for motor control:
 |ENB | 26  | ctrlPinY      | Output    | Y-axis control signal (PWM or DAC) |
 |IN3 | 32  | inPinY0       | Output    | Y-axis direction                   |
 |IN1 | 33  | inPinX0       | Output    | X-axis direction                   |
-|IN4 | 34  | inPinY1       | Output    | Y-axis direction                   |
-|IN2 | 35  | inPinX1       | Output    | X-axis direction                   |
+|IN4 | 14  | inPinY1       | Output    | Y-axis direction                   |
+|IN2 | 27  | inPinX1       | Output    | X-axis direction                   |
 |VSS | VCC | 5V Power      | -         | Power for ESP32 and Hbridge logic  |
 |GND | GND | Ground        | -         | Common ground for all components   |
 |    | 2   | ledPin        | Output    | LED                                |
@@ -47,12 +46,11 @@ The following GPIO pins are used in this project for motor control:
 |VS  | -   | 9V Power      | -         | Power for motors                   |
 
 ### Notes:
+- The H bridge is a L298N.
 - Pins 25 and 26 can be used for PWM/DAC output for speed control (optionnal)
 - X-axis direction is controlled by inPinX0 and inPinX1
 - Y-axis direction is controlled by inPinY0 and inPinY1
 - Y-axis servo is controlled by servoPinY
-- Ensure proper H-bridge or motor driver is used to prevent short circuits
-
 
 ## Installation
 
@@ -97,11 +95,9 @@ echo "Hello, ESP32!" | nc -u 192.168.4.1 12345
 
 ## License
 
-This project has no license.
+This project is under GNU General Public License v3.0
 
 ## Remarks
 
 I'll use an H bridge to control the X and Y axis.
 The candidates are self made H bridge or L298N or L293D. Suggestions are welcome.
-
-TODO add a timer to avoid short circuiting the H bridge if necessary
