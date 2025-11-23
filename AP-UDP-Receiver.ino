@@ -42,6 +42,8 @@ char packetBuffer[BUFFER_SIZE];            // Buffer to hold incoming packets
 
 // Global variables
 bool isClientConnected = false;
+unsigned long lastPacketTime = 0;
+const unsigned long CONNECTION_TIMEOUT = 2000; // 2 seconds timeout
 
 void setup() {
   // Initialize Serial
@@ -74,6 +76,8 @@ void setup() {
 
 void loop() {
   handleUdpTraffic();
+  checkConnectionTimeout();
+  checkClientConnection();
   yield(); // Allow ESP8266/ESP32 background tasks to run
 }
 
@@ -88,6 +92,7 @@ void handleUdpTraffic() {
   int packetSize = udp.parsePacket();
   
   if (packetSize > 0) {
+    lastPacketTime = millis(); // Update last packet time
     // Ensure we don't overflow the buffer
     size_t len = min((size_t)packetSize, BUFFER_SIZE - 1);
     
@@ -158,15 +163,25 @@ void printNetworkInfo() {
   Serial.println("===========================\n");
 }
 
-void checkClientConnection() {
-  if (WiFi.softAPgetStationNum() == 0) {
+void checkConnectionTimeout() {
+  if (isClientConnected && (millis() - lastPacketTime > CONNECTION_TIMEOUT)) {
     isClientConnected = false;
     digitalWrite(ledPin, LOW);
-    Serial.println("no client connected"); // TODO test monday
-  } else {
-    isClientConnected = true;
-    digitalWrite(ledPin, HIGH);
-    Serial.println("client connected"); // TODO test monday
+    resetPins();
+    Serial.println("Connection timeout - No data received");
+  }
+}
+
+void checkClientConnection() {
+  bool currentStatus = (WiFi.softAPgetStationNum() > 0);
+  
+  if (currentStatus != isClientConnected) {
+    isClientConnected = currentStatus;
+    digitalWrite(ledPin, isClientConnected ? HIGH : LOW);
+    if (!isClientConnected) {
+      resetPins();
+    }
+    Serial.println(isClientConnected ? "Client connected" : "Client disconnected");
   }
 }
 
